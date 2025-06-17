@@ -1,0 +1,2800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microbiology-2025-students</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .timer-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .timer {
+            background: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 25px;
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #d32f2f;
+            font-weight: 600;
+        }
+
+        .exit-btn {
+            background: #37474f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .exit-btn:hover {
+            background: #455a64;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+        }
+
+        .quiz-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-header {
+            background: #3f51b5;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .question-number {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #2c3e50;
+        }
+
+        .answers {
+            space-y: 12px;
+        }
+
+        .answer-option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .answer-option:hover:not(.disabled) {
+            background: #e3f2fd;
+            border-color: #2196f3;
+            transform: translateY(-2px);
+        }
+
+        .answer-option.selected {
+            background: #2196f3;
+            color: white;
+            border-color: #1976d2;
+        }
+
+        .answer-option.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #388e3c;
+        }
+
+        .answer-option.incorrect {
+            background: #f44336;
+            color: white;
+            border-color: #d32f2f;
+        }
+
+        .answer-option.correct-answer-mode {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 2px solid #4caf50;
+            font-weight: 600;
+        }
+
+        .answer-option.other-answer-mode {
+            background: #f5f5f5;
+            color: #757575;
+            border: 1px solid #e0e0e0;
+            opacity: 0.7;
+        }
+
+        .answer-option.disabled {
+            cursor: not-allowed;
+        }
+
+        .option-label {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .answer-option.selected .option-label,
+        .answer-option.correct .option-label,
+        .answer-option.incorrect .option-label {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .nav-btn {
+            background: #3f51b5;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #303f9f;
+        }
+
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .controls-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .mode-toggles {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toggle-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .toggle-btn.active {
+            background: #3f51b5;
+            color: white;
+            border-color: #303f9f;
+        }
+
+        .jump-section {
+            margin-top: 20px;
+        }
+
+        .jump-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .jump-btn {
+            width: 100%;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .jump-btn:hover {
+            background: #f57c00;
+        }
+
+        .status-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-header {
+            background: #37474f;
+            color: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .question-dot {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .question-dot:hover {
+            transform: scale(1.1);
+        }
+
+        .question-dot.current {
+            background: #2196f3;
+            color: white;
+            border-color: #1976d2;
+        }
+
+        .question-dot.answered {
+            background: #4caf50;
+            color: white;
+        }
+
+        .question-dot.unanswered {
+            background: #f44336;
+            color: white;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .score-text {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        /* Night Mode Styles */
+        body.night-mode {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        }
+
+        body.night-mode .header,
+        body.night-mode .quiz-section,
+        body.night-mode .controls-panel,
+        body.night-mode .status-panel {
+            background: #34495e;
+            color: #ecf0f1;
+        }
+
+        body.night-mode .title,
+        body.night-mode .question-text,
+        body.night-mode .controls-title {
+            color: #ecf0f1;
+        }
+
+        body.night-mode .answer-option {
+            background: #2c3e50;
+            border-color: #34495e;
+            color: #ecf0f1;
+        }
+
+        body.night-mode .answer-option:hover:not(.disabled) {
+            background: #3498db;
+            border-color: #2980b9;
+        }
+
+        body.night-mode .jump-input {
+            background: #2c3e50;
+            color: #ecf0f1;
+            border-color: #34495e;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .timer-section {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .question-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 6px;
+            }
+            
+            .question-dot {
+                width: 35px;
+                height: 35px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .quiz-section {
+                padding: 20px;
+            }
+            
+            .question-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title" id="quiz-title">Microbiology-2025-students</div>
+            <div class="timer-section">
+                <div class="timer">
+                    <span>⏰</span>
+                    <span>Time left</span>
+                    <span id="timer-display">60 min 00 sec</span>
+                </div>
+                <button class="exit-btn" id="exit-btn">
+                    <span>📋</span>
+                    Exit
+                </button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="quiz-section">
+                <div class="question-header">
+                    <div class="question-number" id="question-number">1</div>
+                    <div>Questions</div>
+                </div>
+                
+                <div class="question-text" id="question-text">
+                    Question will appear here
+                </div>
+                
+                <div class="answers" id="answer-options">
+                    <!-- Answer options will be populated here -->
+                </div>
+                
+                <div class="navigation">
+                    <button class="nav-btn" id="back-btn" disabled>Back</button>
+                    <button class="nav-btn" id="next-btn">Next</button>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="controls-panel">
+                    <div class="controls-title">Controls</div>
+                    <div class="mode-toggles">
+                        <button class="toggle-btn" id="night-mode-toggle">🌙 Night Mode</button>
+                        <button class="toggle-btn" id="mode-toggle">📖 Answer Mode</button>
+                    </div>
+                    
+                    <div class="jump-section">
+                        <input type="number" class="jump-input" id="jump-input" placeholder="Jump to question #" min="1">
+                        <button class="jump-btn" id="jump-btn">Go</button>
+                    </div>
+                </div>
+
+                <div class="status-panel">
+                    <div class="status-header">Questions Status</div>
+                    <div class="question-grid" id="question-grid">
+                        <!-- Question status dots will be populated here -->
+                    </div>
+                    
+                    <div class="score-display" id="score-display" style="display: none;">
+                        <div class="score-text" id="score-text">Score: 0/0</div>
+                        <div>Great job!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Questions data
+        const questions = [
+            {
+                question: "Robert Koch’s assistant had advised him to use agar instead of gelatin because:",
+                answers: [
+                    { text: "Gelatin melts at 250C", correct: true },
+                    { text: "Agar is more nutritious", correct: false },
+                    { text: "Gelatin is cheap", correct: false },
+                    { text: "Gelatin is not easily available", correct: false },
+                    { text: "Agar is cheaper", correct: false },
+                ]
+            },
+            {
+                question: "In blood culture the ratio of blood to reagent is:",
+                answers: [
+                    { text: "ratio 1:5", correct: true },
+                    { text: "ratio 1:10", correct: false },
+                    { text: "ratio 1:20", correct: false },
+                    { text: "ratio 1:50", correct: false },
+                    { text: "ratio 1:100", correct: false },
+                ]
+            },
+            {
+                question: " Which is an enrichment media?",
+                answers: [
+                    { text: "Selenite F broth", correct: true },
+                    { text: "Meat extract broth", correct: false },
+                    { text: "Dorset egg media", correct: false },
+                    { text: "Chocolate agar", correct: false },
+                    { text: "Nutrient agar", correct: false },
+                ]
+            },
+            {
+                question: "A laboratory technician needs to prepare a bacterial smear for Gram staining. Which microscope should they use to examine the stained slide?",
+                answers: [
+                    { text: "Compound microscope", correct: true },
+                    { text: "Electron microscope", correct: false },
+                    { text: "Fluorescence microscope", correct: false },
+                    { text: "Scanning electron microscope", correct: false },
+                    { text: "Phase-contrast microscope", correct: false },
+                ]
+            },
+            {
+                question: "During a microbiology experiment, a researcher accidentally spills a culture of pathogenic bacteria. What immediate action should they take to prevent the spread of contamination?",
+                answers: [
+                    { text: "Notify the laboratory supervisor and follow the facility's spill cleanup protocol", correct: true },
+                    { text: "Leave the spill for the cleaning staff to handle", correct: false },
+                    { text: "Quickly wipe the spill with paper towels", correct: false },
+                    { text: "Pour disinfectant directly onto the spill", correct: false },
+                    { text: "Continue working and clean up the spill later", correct: false },
+                ]
+            },
+            {
+                question: "Which of the following is NOT a step in the Gram staining procedure?",
+                answers: [
+                    { text: "Application of malachite green", correct: true },
+                    { text: "Application of crystal violet", correct: false },
+                    { text: "Decolorization with alcohol or acetone", correct: false },
+                    { text: "Application of safranin", correct: false },
+                    { text: "Application of iodine", correct: false },
+                ]
+            },
+            {
+                question: "Situation: A microbiologist needs to prepare a bacterial smear from a liquid culture for microscopic examination. Which of the following techniques would be most appropriate for smear preparation in this case?",
+                answers: [
+                    { text: "Looping", correct: true },
+                    { text: "Streaking", correct: false },
+                    { text: "Spreading", correct: false },
+                    { text: "Pouring", correct: false },
+                    { text: "Swabbing", correct: false },
+                ]
+            },
+            {
+                question: "What is the primary structural component of fungal cell walls?",
+                answers: [
+                    { text: "Chitin", correct: true },
+                    { text: "Peptidoglycan", correct: false },
+                    { text: "Lipopolysaccharide", correct: false },
+                    { text: "Cellulose", correct: false },
+                    { text: "Glycocalyx", correct: false },
+                ]
+            },
+            {
+                question: "What is the term used to describe fungi that exist as single-celled organisms?",
+                answers: [
+                    { text: "Yeast", correct: true },
+                    { text: "Hyphae", correct: false },
+                    { text: "Mycelium", correct: false },
+                    { text: "Spore", correct: false },
+                    { text: "Mold", correct: false },
+                ]
+            },
+            {
+                question: "Which of the following bacterial shapes is characterized by a twisted or spiral shape?",
+                answers: [
+                    { text: "Spirillum", correct: true },
+                    { text: "Coccus", correct: false },
+                    { text: "Bacillus", correct: false },
+                    { text: "Vibrio", correct: false },
+                    { text: "Diplococcus", correct: false },
+                ]
+            },
+            {
+                question: "What is the primary function of bacterial endospores?",
+                answers: [
+                    { text: "Protection against adverse conditions", correct: true },
+                    { text: "Energy storage", correct: false },
+                    { text: "Reproduction", correct: false },
+                    { text: "Synthesizing proteins", correct: false },
+                    { text: "Facilitating cellular respiration", correct: false },
+                ]
+            },
+            {
+                question: "Situation: A microbiologist is examining a Gram-stained bacterial smear and notices red-stained structures within some cells. What is the likely explanation for this observation?",
+                answers: [
+                    { text: "Presence of endospores", correct: true },
+                    { text: "Presence of capsules", correct: false },
+                    { text: "Presence of volutin granules", correct: false },
+                    { text: "Presence of flagella", correct: false },
+                    { text: "Presence of gas vacuoles", correct: false },
+                ]
+            },
+            {
+                question: "When a substance is added to a solid medium which inhibits the growth of unwanted bacteria but permits the growth of wanted bacteria , it is  known as:",
+                answers: [
+                    { text: "Selective medium", correct: true },
+                    { text: "Enrichment medium", correct: false },
+                    { text: " Enriched medium", correct: false },
+                    { text: "Differential medium", correct: false },
+                    { text: "nutrient medium", correct: false },
+                ]
+            },
+            {
+                question: "Quantitative measurement of bacterial growth can be carried out by measuring",
+                answers: [
+                    { text: "all of these", correct: true },
+                    { text: "cell count", correct: false },
+                    { text: "cell mass", correct: false },
+                    { text: "cell activity", correct: false },
+                    { text: "non of these", correct: false },
+                ]
+            },
+            {
+                question: "Which is the process in which oxygen participates in an energy-yielding reaction?",
+                answers: [
+                    { text: "Aerobic respiration", correct: true },
+                    { text: "Anabolism", correct: false },
+                    { text: "Catabolism", correct: false },
+                    { text: "Anaerobic respiration", correct: false },
+                    { text: "osmotolerant", correct: false },
+                ]
+            },
+            {
+                question: "A culture broth tube was very turbid at the surface but clear throughout the rest of the tube indicating that the",
+                answers: [
+                    { text: "organism are aerobes", correct: true },
+                    { text: " organism should be grown in an anaerobic chamber", correct: false },
+                    { text: "organism cannot produce superoxide dismutase and/or catalase", correct: false },
+                    { text: " organism cannot tolerate oxygen", correct: false },
+                    { text: "All of these", correct: false },
+                ]
+            },
+            {
+                question: "An organism is completely dependent on atmospheric O2 for growth. This organism is",
+                answers: [
+                    { text: "obligate aerobe", correct: true },
+                    { text: "osmotolerant", correct: false },
+                    { text: "acidophile", correct: false },
+                    { text: " facultative anaerobe", correct: false },
+                    { text: "Chemotrophs", correct: false },
+                ]
+            },
+            {
+                question: "Biological method for creating anaerobic conditions",
+                answers: [
+                    { text: "co-cultivation of aerobes with anaerobes;", correct: true },
+                    { text: "using anaerostat;", correct: false },
+                    { text: "using a desiccator and oxygen reducers;", correct: false },
+                    { text: "using a desiccator and oxygen adsorbents;", correct: false },
+                    { text: "special mediums for anaerobes;", correct: false },
+                ]
+            },
+            {
+                question: "When cultivated on Ploskirev's medium in the feces of a patient with suspected intestinal infection, many colorless colonies and single pink colonies were obtained. What bacteria form such colonies on this medium?",
+                answers: [
+                    { text: "E. coli", correct: true },
+                    { text: "Shigellae", correct: false },
+                    { text: "Vibrio cholerae", correct: false },
+                    { text: "Salmonella", correct: false },
+                    { text: "Staphylococcus", correct: false },
+                ]
+            },
+            {
+                question: "The Reactive Oxygen Species(ROS) poduced by some bacteria are degraded by which of the following enzymes?",
+                answers: [
+                    { text: "Superoxide dismutase, Catalase and Peroxidase", correct: true },
+                    { text: "Peroxidase", correct: false },
+                    { text: "Lyase", correct: false },
+                    { text: "Catalase", correct: false },
+                    { text: "Coagulase", correct: false },
+                ]
+            },
+            {
+                question: "An example of competitive inhibition of an enzyme is the inhibition of",
+                answers: [
+                    { text: "Succinic dehydrogenase by malonic acid", correct: true },
+                    { text: "Cytochrome oxidase by cyanide", correct: false },
+                    { text: "Hexokinase by glucose-6-phosphate", correct: false },
+                    { text: "Carbonic anhydrase by carbon dioxide", correct: false },
+                    { text: "All of these", correct: false },
+                ]
+            },
+            {
+                question: "Isolated pure cultures of gram-positive cocci are catalase- and coagulase-positive. What bacteria have these properties?",
+                answers: [
+                    { text: "S. aureus", correct: true },
+                    { text: "S. saprophyticus", correct: false },
+                    { text: "St. pneumoniae", correct: false },
+                    { text: "S. epidermidis", correct: false },
+                    { text: "Streptococcus", correct: false },
+                ]
+            },
+            {
+                question: "Differential-diagnostic culture media are intended for",
+                answers: [
+                    { text: "isolation and identification of different types of microorganisms;", correct: true },
+                    { text: "allocation of a certain type of microbes;", correct: false },
+                    { text: "Increased turbidity", correct: false },
+                    { text: "discharge of obligate anaerobes;", correct: false },
+                    { text: "discharge of obligate parasites;", correct: false },
+                ]
+            },
+            {
+                question: "When cultured on MacConkey agar, many pink colonies were obtained. What type of bacteria form such colonies on this medium?",
+                answers: [
+                    { text: "Lactose-fermenters", correct: true },
+                    { text: "non Lactose-fermenters", correct: false },
+                    { text: "Late Lactose-fermenters", correct: false },
+                    { text: "Aerobes", correct: false },
+                    { text: "Anaerobes", correct: false },
+                ]
+            },
+            {
+                question: "Robert Koch’s assistant had advised him to use agar instead of gelatin because:",
+                answers: [
+                    { text: "Gelatin melts at 250C", correct: true },
+                    { text: "Agar is more nutritious", correct: false },
+                    { text: "Gelatin is cheap", correct: false },
+                    { text: "Gelatin is not easily available", correct: false },
+                    { text: "Agar is cheaper", correct: false },
+                ]
+            },
+            {
+                question: "Blood agar is an example:",
+                answers: [
+                    { text: "Enriched media", correct: true },
+                    { text: "Enrichment media", correct: false },
+                    { text: "Nutrient media", correct: false },
+                    { text: "Special media", correct: false },
+                    { text: "Differential media", correct: false },
+                ]
+            },
+            {
+                question: "Plasmodium falciparum affects all organs except",
+                answers: [
+                    { text: "Heart", correct: true },
+                    { text: "Lung", correct: false },
+                    { text: "Liver", correct: false },
+                    { text: "Kidney", correct: false },
+                    { text: "Brain", correct: false },
+                ]
+            },
+            {
+                question: "Fish acts as intermediate host in:",
+                answers: [
+                    { text: "D.latum", correct: true },
+                    { text: "Clonorchis sinensis", correct: false },
+                    { text: "H.diminuta", correct: false },
+                    { text: "H.nana", correct: false },
+                    { text: "Necator", correct: false },
+                ]
+            },
+            {
+                question: "Two hosts are required in:",
+                answers: [
+                    { text: "T.solium", correct: true },
+                    { text: "E.histolytica", correct: false },
+                    { text: "T.saginata", correct: false },
+                    { text: "Giardia", correct: false },
+                    { text: "None of the above", correct: false },
+                ]
+            },
+            {
+                question: "A patient presents with lower gastrointestinal bleed. Sigmoidoscopy shows ulcer in the sigmoid. Biopsy from this area shows flask –shaped ulcers. Which of the following is the most appropriate treatment",
+                answers: [
+                    { text: "Intravenous metronidazole", correct: true },
+                    { text: "Intravenous ceftriaxone", correct: false },
+                    { text: "Hydrocortisone enemas", correct: false },
+                    { text: "Intravenous steroids and sulphasalazine", correct: false },
+                    { text: "nan", correct: false },
+                ]
+            },
+            {
+                question: "Which among the following doesn’t enter human body via skin?",
+                answers: [
+                    { text: "Trichinella", correct: true },
+                    { text: "Ancyclostoma", correct: false },
+                    { text: " Strongyloides", correct: false },
+                    { text: "Giardia", correct: false },
+                    { text: "Necator", correct: false },
+                ]
+            },
+            {
+                question: "Protozoa belongs to kingdom:",
+                answers: [
+                    { text: "Protista", correct: true },
+                    { text: "Monera", correct: false },
+                    { text: "None of the above", correct: false },
+                    { text: "Plantae", correct: false },
+                    { text: "Animalia", correct: false },
+                ]
+            },
+            {
+                question: "Which is false about Wuchereria bancrofti",
+                answers: [
+                    { text: "Man and anopheles are host", correct: true },
+                    { text: "Causes filariasis", correct: false },
+                    { text: "Body is long and slender", correct: false },
+                    { text: "Terminal nuclei absent", correct: false },
+                    { text: "The male worm is smaller", correct: false },
+                ]
+            },
+            {
+                question: "Cysticercosis is caused by",
+                answers: [
+                    { text: "T.solium", correct: true },
+                    { text: "T.saginata", correct: false },
+                    { text: "A.duodenale", correct: false },
+                    { text: "E.granulosus", correct: false },
+                    { text: "D.latum", correct: false },
+                ]
+            },
+            {
+                question: "Intermediate host for hydatid disease",
+                answers: [
+                    { text: "Man", correct: true },
+                    { text: "Dog", correct: false },
+                    { text: "Cat", correct: false },
+                    { text: "Foxes", correct: false },
+                    { text: "Birds", correct: false },
+                ]
+            },
+            {
+                question: "Hydatid disease of liver is caused by",
+                answers: [
+                    { text: "Echinococcus granulosus", correct: true },
+                    { text: "Strongloides", correct: false },
+                    { text: "L.donovani", correct: false },
+                    { text: "Taenia solium", correct: false },
+                    { text: "Trichinella spiralis", correct: false },
+                ]
+            },
+            {
+                question: "Pigs are resevoir for ",
+                answers: [
+                    { text: "T.solium", correct: true },
+                    { text: "T.saginata", correct: false },
+                    { text: "Trichinella spiralis", correct: false },
+                    { text: "Ancyclostoma", correct: false },
+                    { text: "H.nana", correct: false },
+                ]
+            },
+            {
+                question: "Which of the following is viviparous ",
+                answers: [
+                    { text: "Trichinella spiralis", correct: true },
+                    { text: "Strongyloidis stercoralis", correct: false },
+                    { text: "E.coli", correct: false },
+                    { text: "Enterobious", correct: false },
+                    { text: "Ascaris", correct: false },
+                ]
+            },
+            {
+                question: "Visceral larva migrains is due to ",
+                answers: [
+                    { text: "Toxocaracanis", correct: true },
+                    { text: "Ascariasis", correct: false },
+                    { text: "Brucellosis", correct: false },
+                    { text: "Schistosomiasis", correct: false },
+                    { text: "Clonorchis Buski", correct: false },
+                ]
+            },
+            {
+                question: "Which of the following statements is true about Passive Immunity?",
+                answers: [
+                    { text: "All of the above", correct: true },
+                    { text: "This immunity causes reactions", correct: false },
+                    { text: "This immunity develops immediately", correct: false },
+                    { text: "This immunity lasts only for a few weeks or months", correct: false },
+                    { text: "Non of these", correct: false },
+                ]
+            },
+            {
+                question: "Which of the following is a false statement about innate immunity? ",
+                answers: [
+                    { text: "It involves lymphocytes and antibodies", correct: true },
+                    { text: "They include inflammatory responses", correct: false },
+                    { text: "They include physical and chemical barriers", correct: false },
+                    { text: "It may involve the formation of complement protein cascades", correct: false },
+                    { text: "Natural killer cells are participants in the process", correct: false },
+                ]
+            },
+            {
+                question: "Antibodies against normal components of the body typically occur in autoimmune diseases. In which one of the following sets of two diseases do antibodies against DNA occur in one diseaese and antibodies against IgG occur in the other disease?",
+                answers: [
+                    { text: "Systemic lupus erythematoid arthritis", correct: true },
+                    { text: "Myasthenia gravis and systemic lupus erythematosus", correct: false },
+                    { text: "Pernicious anemia and rhematic fever", correct: false },
+                    { text: "Rheumatic fever and myasthenia gravis", correct: false },
+                    { text: "Rheumatoid arthritis and pernicious anemia", correct: false },
+                ]
+            },
+            {
+                question: "Which of the following is a flocculation test :",
+                answers: [
+                    { text: "VDRL", correct: true },
+                    { text: "Widal test", correct: false },
+                    { text: "Weil-felix test", correct: false },
+                    { text: "Weil-Felix reaction", correct: false },
+                    { text: "Paul-Bunnell test", correct: false },
+                ]
+            },
+            {
+                question: "Coombs test is example of:",
+                answers: [
+                    { text: "Agglutination", correct: true },
+                    { text: "Coombs", correct: false },
+                    { text: "Widal test", correct: false },
+                    { text: "Neutralization", correct: false },
+                    { text: "CFT", correct: false },
+                ]
+            },
+            {
+                question: "Which one of the following laboratory tests would be the best to determine the number of CD4-positive cells in the blood of a patient infected with HIV?",
+                answers: [
+                    { text: "Flow cytometry", correct: true },
+                    { text: "Agglutination", correct: false },
+                    { text: "Complement fixation", correct: false },
+                    { text: "Enzyme-linked immunosorbent assay (ELISA)", correct: false },
+                    { text: "Immunoelectrophoresis", correct: false },
+                ]
+            },
+            {
+                question: "True about anaphylaxis:",
+                answers: [
+                    { text: "Type – I reaction", correct: true },
+                    { text: "Large amount of histamine released", correct: false },
+                    { text: "Cytokines like IL4 ,IL5 and GMCSF are released", correct: false },
+                    { text: "Mediated through allergen specific IgE", correct: false },
+                    { text: "All of these ", correct: false },
+                ]
+            },
+            {
+                question: "Which category of hypersensitivity BEST describes hemolytic disease of the newborn caused by Rh incompatibility?",
+                answers: [
+                    { text: "Cytotoxic", correct: true },
+                    { text: "Atopic or anaphylactic", correct: false },
+                    { text: "None of these ", correct: false },
+                    { text: "Immune complex", correct: false },
+                    { text: "Delayed ", correct: false },
+                ]
+            },
+            {
+                question: "The principal difference between cytotoxic (type II) and immune complex (type III) hypersensitivity is:",
+                answers: [
+                    { text: "Whether the antibody reacts with the antigen on the cell or reacts with antigen before it interacts with the cell", correct: true },
+                    { text: "The class (isotype) of antibody", correct: false },
+                    { text: "None of these ", correct: false },
+                    { text: "The participation of complement", correct: false },
+                    { text: "The participation of T cells", correct: false },
+                ]
+            },
+            {
+                question: "Naturally acquired passive immunity would involve the ",
+                answers: [
+                    { text: "Placental transfer of antibodies", correct: true },
+                    { text: "Injection of vaccine", correct: false },
+                    { text: "Ingestion of interferon", correct: false },
+                    { text: "Injection of antibodies", correct: false },
+                    { text: "Absorption of pathogens through mucous membranes", correct: false },
+                ]
+            },
+            {
+                question: "A 10-year-old child was bitten by a stray dog. The child is started on a course of anti-rabies post-exposure prophylaxis, beginning with inoculation of pooled human antirabies immunoglobulin. What would repeated inoculation of this antirabies immunoglobulin preparation be likely to induce?",
+                answers: [
+                    { text: "Anti-allotype antibodies", correct: true },
+                    { text: "Anti-epitope antibodies", correct: false },
+                    { text: "Anti-idiotype antibodies", correct: false },
+                    { text: "Anti-isotype antibodies", correct: false },
+                    { text: "Anti-rabies antibodies", correct: false },
+                ]
+            },
+            {
+                question: "Which test is used to identify staphylococci?",
+                answers: [
+                    { text: "Coagulase test", correct: true },
+                    { text: "Gram staining", correct: false },
+                    { text: "Oxidase", correct: false },
+                    { text: "PCR", correct: false },
+                    { text: "Catalase", correct: false },
+                ]
+            },
+            {
+                question: "How is a culture performed to isolate streptococci from biological material?",
+                answers: [
+                    { text: " Blood agar", correct: true },
+                    { text: "Sucrose agar", correct: false },
+                    { text: "MacConkey agar", correct: false },
+                    { text: "Chocolate agar", correct: false },
+                    { text: "Chapek Dox agar", correct: false },
+                ]
+            },
+            {
+                question: " What factors can influence the effectiveness of vaccination against streptococci?",
+                answers: [
+                    { text: "Patient's age", correct: true },
+                    { text: " Antigenic drift", correct: false },
+                    { text: "Temperature conditions", correct: false },
+                    { text: "Genetic mutations", correct: false },
+                    { text: "Immunocompromised state", correct: false },
+                ]
+            },
+            {
+                question: "What symptoms are characteristic of an infection caused by Vibrio cholera?",
+                answers: [
+                    { text: "Acute gastrointestinal disturbances", correct: true },
+                    { text: "Enterobacteriaceae", correct: false },
+                    { text: "Severe cough", correct: false },
+                    { text: "Pus-filled abscesses", correct: false },
+                    { text: "Leprosy", correct: false },
+                ]
+            },
+            {
+                question: "Which microorganisms cause diphtheria?",
+                answers: [
+                    { text: "Corynebacterium diphtheriae", correct: true },
+                    { text: "Vibrio cholera", correct: false },
+                    { text: "Actinomyces spp.", correct: false },
+                    { text: "Bordetella pertussis", correct: false },
+                    { text: "Bacillus parapertussis", correct: false },
+                ]
+            },
+            {
+                question: "What is the main cause of gas gangrene development?",
+                answers: [
+                    { text: "Activity of Clostridium perfringens toxin", correct: true },
+                    { text: "Actinomyces spp.", correct: false },
+                    { text: "Penetration of gas into tissues", correct: false },
+                    { text: "Bacterial invasion of Mycobacterium leprae", correct: false },
+                    { text: "Action of Clostridium botulinum toxin", correct: false },
+                ]
+            },
+            {
+                question: "What symptoms are characteristic of gas gangrene?",
+                answers: [
+                    { text: " Swelling and gas bubbles in tissues", correct: true },
+                    { text: "Cytotoxin, destroying cells", correct: false },
+                    { text: "Muscle spasms", correct: false },
+                    { text: "High temperature", correct: false },
+                    { text: "Gastrointestinal disorders", correct: false },
+                ]
+            },
+            {
+                question: "Which microorganism causes gas gangrene?",
+                answers: [
+                    { text: "Clostridium perfringens", correct: true },
+                    { text: "Corynebacterium diphtheriae", correct: false },
+                    { text: "Clostridium tetani", correct: false },
+                    { text: "Clostridium botulinum", correct: false },
+                    { text: "Mycobacterium tuberculosis", correct: false },
+                ]
+            },
+            {
+                question: "What forms of plague exist?",
+                answers: [
+                    { text: "Bubonic, septicemic, pulmonary", correct: true },
+                    { text: "Meningitis", correct: false },
+                    { text: "Meningitis, arthritis, encephalitis", correct: false },
+                    { text: "Gas, ulcerative, toxic", correct: false },
+                    { text: "Abscess, diphtheria, laryngeal", correct: false },
+                ]
+            },
+            {
+                question: "What signs help differentiate botulism from other neurological diseases?",
+                answers: [
+                    { text: "Changes in muscle condition and reflexes", correct: true },
+                    { text: "Causes inflammation of nerves", correct: false },
+                    { text: "Blood laboratory analyses", correct: false },
+                    { text: "Computerized tomography of the brain", correct: false },
+                    { text: "Electromyography", correct: false },
+                ]
+            },
+            {
+                question: "Which microorganisms are considered intracellular parasites?",
+                answers: [
+                    { text: "Mycoplasma pneumoniae and Treponema pallidum", correct: true },
+                    { text: "Treponema pallidum", correct: false },
+                    { text: "Staphylococcus aureus and Streptococcus pyogenes", correct: false },
+                    { text: "Escherichia coli and Salmonella enterica", correct: false },
+                    { text: "Vibrio cholerae and Shigella dysenteriae", correct: false },
+                ]
+            },
+            {
+                question: "What symptoms are characteristic of relapsing fever?",
+                answers: [
+                    { text: "High temperature, muscle weakness, and headache", correct: true },
+                    { text: "Headache", correct: false },
+                    { text: "Skin rashes and fever", correct: false },
+                    { text: "Lymphadenopathy and gastrointestinal disturbances", correct: false },
+                    { text: "Muscle paralysis and edema", correct: false },
+                ]
+            },
+            {
+                question: "Which organisms cause syphilis?",
+                answers: [
+                    { text: "Treponema pallidum", correct: true },
+                    { text: "Malaria", correct: false },
+                    { text: "Leptospira interrogans", correct: false },
+                    { text: "Rickettsia rickettsii", correct: false },
+                    { text: "Mycoplasma pneumoniae", correct: false },
+                ]
+            },
+            {
+                question: "Which of the following is an opportunistic organism in AIDS?",
+                answers: [
+                    { text: " Strongyloidosis", correct: true },
+                    { text: "Ascaris", correct: false },
+                    { text: "E.coli", correct: false },
+                    { text: "Hook worm", correct: false },
+                    { text: "Enterobius", correct: false },
+                ]
+            },
+            {
+                question: "According to drug and cosmetic act which is not mandatory for screening of donated blood",
+                answers: [
+                    { text: "West Nile virus", correct: true },
+                    { text: "HIV", correct: false },
+                    { text: "Hepatitis B", correct: false },
+                    { text: "Hepatitis C", correct: false },
+                    { text: "CMV", correct: false },
+                ]
+            },
+            {
+                question: "Non-parenteral hepatitis is",
+                answers: [
+                    { text: "Hepatitis E", correct: true },
+                    { text: "Hepatitis C", correct: false },
+                    { text: "Hepatitis B", correct: false },
+                    { text: "Hepatitis D", correct: false },
+                    { text: "Occult Hepatitis C", correct: false },
+                ]
+            },
+            {
+                question: "Neurological complications following Rabies vaccine is common with",
+                answers: [
+                    { text: "Semple Vaccine", correct: true },
+                    { text: "HDCS Vaccine", correct: false },
+                    { text: "Chick embryo Vaccine", correct: false },
+                    { text: "none all above", correct: false },
+                    { text: "Duck Egg Vaccine", correct: false },
+                ]
+            },
+            {
+                question: "True about Prion disease is all except ",
+                answers: [
+                    { text: "Myoclonus is seen in 10% of the patients", correct: true },
+                    { text: "Caused by infectious protein", correct: false },
+                    { text: "Brain biopsy is diagnostic", correct: false },
+                    { text: "Commonly manifests as dementia", correct: false },
+                    { text: "NoneDNA and RNA virus", correct: false },
+                ]
+            },
+            {
+                question: "EBOLA virus- True statement(s) is/are",
+                answers: [
+                    { text: "Cases are restricted to Guinea, Liberia and Sierra Leone", correct: true },
+                    { text: "Incubation less than 48hr", correct: false },
+                    { text: "Transmission is by oral route", correct: false },
+                    { text: "Specific treatment available", correct: false },
+                    { text: "note contagious", correct: false },
+                ]
+            },
+            {
+                question: "Laboratory diagnosis of viral respiratory tract infection can be established by all of the following tests except",
+                answers: [
+                    { text: "Detection of viral hemagglutination inhibiting (HAI ) antibodies in a single serum specimen", correct: true },
+                    { text: "Detection of virus specific IgM antibodies in single serum specimen", correct: false },
+                    { text: "Demonstration of viral antigens by indirect immunofluorescene assay in nasopharyngeal washing", correct: false },
+                    { text: "Isolation of viruses using centrifugation enhanced culture", correct: false },
+                    { text: "PCR", correct: false },
+                ]
+            },
+            {
+                question: "For the treatment of case of class III dog bite, all of the following are correct except",
+                answers: [
+                    { text: "Immediately stitch wound under antibiotic coverage", correct: true },
+                    { text: "Give Ig for passive immunity", correct: false },
+                    { text: "Give ARV", correct: false },
+                    { text: "intensive therapy", correct: false },
+                    { text: "Immediately wash wound with soap and water", correct: false },
+                ]
+            },
+            {
+                question: "Dog bite in palm fingers with oozing of blood from neck…. Belongs to which class exposure",
+                answers: [
+                    { text: "Class III", correct: true },
+                    { text: "Class I", correct: false },
+                    { text: "Class II", correct: false },
+                    { text: "nan", correct: false },
+                    { text: "Class IV", correct: false },
+                ]
+            },
+            {
+                question: "All the following vaccines are developed from embryonated eggs except",
+                answers: [
+                    { text: "Hepatitis-A", correct: true },
+                    { text: "Influenza", correct: false },
+                    { text: "all of above", correct: false },
+                    { text: "Yellow fever", correct: false },
+                    { text: "Rabies", correct: false },
+                ]
+            },
+            {
+                question: "A resident doctor sustained a needle stick injury while sampling blood of patient who is HIV positive. A decision is taken to often him postexposure prophylaxis. Which one of the following would be the best recommendation",
+                answers: [
+                    { text: "Zidovudine + Lamivudine + Indinavir for 4 weeks", correct: true },
+                    { text: "Zidovudine + Lamivudine for 4 weeks", correct: false },
+                    { text: "Zidovudine + Lamivudine Nevirapine for 4 weeks", correct: false },
+                    { text: "Zidovudine + Lamivudine Nevirapine for 2 weeks", correct: false },
+                    { text: " Zidovudine + Stavudine + nevirapine for 4 weeks", correct: false },
+                ]
+            },
+            {
+                question: "A neonate develops encephalitis without any skin lesions most probable causative organism is ",
+                answers: [
+                    { text: "HSV II", correct: true },
+                    { text: "HSV I", correct: false },
+                    { text: "Staphylococcus aureus", correct: false },
+                    { text: "Meningococci", correct: false },
+                    { text: "Streptococci", correct: false },
+                ]
+            },
+            {
+                question: "For the treatment of case of class III dog bite, all of the following are correct except",
+                answers: [
+                    { text: "Immediately stitch wound under antibiotic coverage", correct: true },
+                    { text: "Give Ig for passive immunity", correct: false },
+                    { text: "Give ARV", correct: false },
+                    { text: "intensive therapy", correct: false },
+                    { text: "Immediately wash wound with soap and water", correct: false },
+                ]
+            },
+            {
+                question: "Class II exposure in animal bites includes the following",
+                answers: [
+                    { text: "Nibbling of uncovered area", correct: true },
+                    { text: "Scratches without oozing of blood", correct: false },
+                    { text: "Bites from mosquitoes", correct: false },
+                    { text: "Scratch with oozing of blood on palm", correct: false },
+                    { text: "Bites from wild animals", correct: false },
+                ]
+            },
+            {
+                question: "A group of individuals living in a densely populated urban area experiences an outbreak of yellow fever. Which of the following mosquito species is the primary vector for yellow fever virus transmission in such environments?",
+                answers: [
+                    { text: "Aedes aegypti mosquito", correct: true },
+                    { text: "Anopheles mosquito", correct: false },
+                    { text: "Phlebotomus sandfly", correct: false },
+                    { text: "Culex mosquito ", correct: false },
+                    { text: "Ixodes tick", correct: false },
+                ]
+            },
+            {
+                question: "Common fungus causing corneal ulcer:",
+                answers: [
+                    { text: "Aspergillus", correct: true },
+                    { text: "Mucor", correct: false },
+                    { text: "Fusarium", correct: false },
+                    { text: " Sprothrix", correct: false },
+                    { text: " Candida", correct: false },
+                ]
+            },
+            {
+                question: "Which dye is most suitable for fungus demonstration in biopsy?",
+                answers: [
+                    { text: " PAS", correct: true },
+                    { text: "Alizarin red", correct: false },
+                    { text: "Veirhoff dye", correct: false },
+                    { text: "Manson’s trichome", correct: false },
+                    { text: "India ink stain", correct: false },
+                ]
+            },
+            {
+                question: "A 25 years old female complains of recurrent rhinitis, nasal discharge and bilateral nasal blockage since 2 years. She has history of asthma and allergy. On examination multiple ethmoidal polyps are noted with mucosal thickening and impacted secretions in both the nasal cavities. Biopsy is taken and the material is cultured which shown the growth of many hyphae and pseudhohyphae with dichotomous branching typically at 45°. Which of the following is the most likely responsible organism?",
+                answers: [
+                    { text: "Aspergillus fumigatus", correct: true },
+                    { text: " Rhizopus", correct: false },
+                    { text: "Mucor", correct: false },
+                    { text: "Candida", correct: false },
+                    { text: "Aspergilus flavus", correct: false },
+                ]
+            },
+            {
+                question: "A Diabetic patient suffers from a soft tissue infection and microbiological examination reveal the infection been caused by with fungi with aseptate and broad hyphae. Which of the following fungus is responsible for this infection?",
+                answers: [
+                    { text: "Apophysomyces", correct: true },
+                    { text: "Candida", correct: false },
+                    { text: "Aspergillus", correct: false },
+                    { text: "Pencillium", correct: false },
+                    { text: "Histoplasma", correct: false },
+                ]
+            },
+            {
+                question: "An early diabetic has left sided orbital cellulitis CT scan of paranasal sinus shows evidence of left maxillary sinusitis. Gram stained smear of the orbital exudate shows irregularly branching septate hyphae. The following is most likely etiological agent:",
+                answers: [
+                    { text: "Aspergillus", correct: true },
+                    { text: "Rhizopus", correct: false },
+                    { text: "Mucor", correct: false },
+                    { text: "Candida", correct: false },
+                    { text: "Histoplasma", correct: false },
+                ]
+            },
+            {
+                question: "True about Histoplasma capsulatum:",
+                answers: [
+                    { text: "Dimorphic fungus", correct: true },
+                    { text: "Causative organism of moniliasis", correct: false },
+                    { text: "Causative organism of valley fever", correct: false },
+                    { text: "Capsulated", correct: false },
+                    { text: "Sclerotic bodies are found", correct: false },
+                ]
+            },
+            {
+                question: "Microscopically, at 25-30 degrees celsius, ______ produces delicate, thin septate and branching hyphae that are hyaline. Slender, tapering conidiophores arise at right angles to the hyphae that bear many small tear-shaped or almost round conidia on delicate threadlike denticles forming a \"rosette-like\" cluster in young cultures; conidia also form singly along the hyphaeAt 35- 37 degrees celsius, round, oval and fusiform budding cells of various sizes often called \"cigar bodies\" are seen. What dimorphic fungi am I describing?",
+                answers: [
+                    { text: "Sporothrix schenckii", correct: true },
+                    { text: "Histoplasma capsulatum ", correct: false },
+                    { text: "Blastomyces dermatitidis ", correct: false },
+                    { text: "Paracoccidioides brasiliensis", correct: false },
+                    { text: "Penicillium marneffei", correct: false },
+                ]
+            },
+            {
+                question: "A 32-y.o.female farmer presented to physician with a 3-week complaint of a low-grade fever, myalgias, a productive cough, and a skin lesion that developed during the previous week. Found an infiltrate on chest x-ray and collected sputum and a biopsy of the lesion. Faint-staining, large round cells, some with budding cells, were observed on the Gram stain and silver stain of the biopsy material and the etiologic agent grew in culture after 2 weeks. The most likely diagnosis is:",
+                answers: [
+                    { text: "Blastomyces dermatitidis ", correct: true },
+                    { text: "Candida albicans", correct: false },
+                    { text: "Histoplasma capsulatum ", correct: false },
+                    { text: "Mycobacterium marinum", correct: false },
+                    { text: "Sporothrix schenckii", correct: false },
+                ]
+            },
+            {
+                question: "Which is false regarding Cryptococcus neoformans:",
+                answers: [
+                    { text: "Urease negative", correct: true },
+                    { text: "Grows at 50° C and 370° C", correct: false },
+                    { text: "It has 4 serotypes", correct: false },
+                    { text: "Fungus", correct: false },
+                    { text: "Causes superficial skin infection", correct: false },
+                ]
+            },
+            {
+                question: "HIV positive female presents with an indurated ulcer over the tongue Laboratory findings show growth in cornmeal agar at 20°C, microscope by showing hyphae and growth in human serum at 370C show budding yeast Probable cause is :",
+                answers: [
+                    { text: "Candida albicans", correct: true },
+                    { text: "Histoplasmosis", correct: false },
+                    { text: "Blastomycosis", correct: false },
+                    { text: "Coccidioidomycosis", correct: false },
+                    { text: "Aspergillus fumigates", correct: false },
+                ]
+            },
+            {
+                question: "Fulminant Amoeba meningoencephalitis caused by ",
+                answers: [
+                    { text: "Acanthamoeba", correct: true },
+                    { text: "N. folwler", correct: false },
+                    { text: "E. histolytica", correct: false },
+                    { text: "E. coli", correct: false },
+                    { text: "C. parvum ", correct: false },
+                ]
+            },
+            {
+                question: "Which one of the following does not pass through the lungs ",
+                answers: [
+                    { text: "Enterobius Vermicularis", correct: true },
+                    { text: "Hookworm", correct: false },
+                    { text: "Ascaris", correct: false },
+                    { text: "Strongyloidis", correct: false },
+                    { text: "Plasmodium.malaria", correct: false },
+                ]
+            },
+            {
+                question: "A patient present with diarrhoea. Analysis of stool on wet mount shows mobile protozoa without RBCs and pus cells. the Diagnosis is ",
+                answers: [
+                    { text: "Giardiasis", correct: true },
+                    { text: "Balantidium coli", correct: false },
+                    { text: "Ascaris", correct: false },
+                    { text: "Trichomonas hominis", correct: false },
+                    { text: "Entamoeba histolytica", correct: false },
+                ]
+            },
+            {
+                question: "A woman delivered a dead child with multiple developmental defects. What protozoan disease might have caused the intrauterine death?",
+                answers: [
+                    { text: "Toxoplasmosis ", correct: true },
+                    { text: "Leishmaniasis", correct: false },
+                    { text: "Malaria", correct: false },
+                    { text: "Amebiasis", correct: false },
+                    { text: "Lambliasis", correct: false },
+                ]
+            },
+            {
+                question: "A woman gave birth to a stillborn baby with numerous malformations. What protozoan disease could cause intrauterine death?",
+                answers: [
+                    { text: "Toxoplasmosis", correct: true },
+                    { text: " Leishmaniasis", correct: false },
+                    { text: "Malaria", correct: false },
+                    { text: "Amebiasis", correct: false },
+                    { text: "Lambliasis", correct: false },
+                ]
+            },
+            {
+                question: "A child from Bihar comes with fever. Blood examination shows sheathed microfilaria with nuclei up to tail tip. The diagnosis is ",
+                answers: [
+                    { text: "B. malayi", correct: true },
+                    { text: "W. bancrofti", correct: false },
+                    { text: "Loa loa", correct: false },
+                    { text: "Oncicerca volvulus", correct: false },
+                    { text: "E.coli", correct: false },
+                ]
+            },
+            {
+                question: "Schistosoma Japonicum resides in ",
+                answers: [
+                    { text: "Splenic Vein", correct: true },
+                    { text: "Vesical Plexus", correct: false },
+                    { text: "Kidneys", correct: false },
+                    { text: "Systemic Circulation", correct: false },
+                    { text: "Gall bladder", correct: false },
+                ]
+            },
+            {
+                question: "Which of the following disease is transmitted by egg ingestion :",
+                answers: [
+                    { text: "Hydatidosis", correct: true },
+                    { text: "Taeniasis", correct: false },
+                    { text: "Trichinosis", correct: false },
+                    { text: "Leishmania donovani", correct: false },
+                    { text: "Strongyloidosis", correct: false },
+                ]
+            },
+            {
+                question: "Each of the following statements concerning hookworm infection is correct, except:",
+                answers: [
+                    { text: "Hookworm infection can be diagnosed by finding the trophozoite in the stool", correct: true },
+                    { text: "Hookworm infection can cause pneumonia", correct: false },
+                    { text: "Hookworm infection is acquired by humans when filariform larvae penetrate the skin", correct: false },
+                    { text: "Hookworm infection is caused by Necator americanus", correct: false },
+                    { text: "Hookworm is one of the largest nematode", correct: false },
+                ]
+            },
+            {
+                question: "Which of the following resides in caecum ",
+                answers: [
+                    { text: "Trichuris trichuria", correct: true },
+                    { text: "A. lumbricoides", correct: false },
+                    { text: "Strongyloides", correct: false },
+                    { text: "Hookworm", correct: false },
+                    { text: "Leishmania donovani", correct: false },
+                ]
+            },
+            {
+                question: "Cause of epilepsy in upto 50% Indian patients is",
+                answers: [
+                    { text: "Neurocysticercosis", correct: true },
+                    { text: "Cerebral malaria ", correct: false },
+                    { text: "Toxoplasmosis", correct: false },
+                    { text: "Cerebral hydatid cyst", correct: false },
+                    { text: "Hymenolepis nana", correct: false },
+                ]
+            },
+            {
+                question: "All are true about brugia-malayi, except ",
+                answers: [
+                    { text: "Smooth curved in stain preparation", correct: true },
+                    { text: "Nucelated tail tip", correct: false },
+                    { text: "Enveloped sheath", correct: false },
+                    { text: "Nocturnal periodicity", correct: false },
+                    { text: "Nematode", correct: false },
+                ]
+            },
+            {
+                question: "Robert Koch’s assistant had advised him to use agar instead of gelatin because:",
+                answers: [
+                    { text: "Gelatin melts at 250C", correct: true },
+                    { text: "Agar is more nutritious", correct: false },
+                    { text: "Gelatin is cheap", correct: false },
+                    { text: "Gelatin is not easily available", correct: false },
+                    { text: "Agar is cheaper", correct: false },
+                ]
+            },
+            {
+                question: "Which of the following is not a selective media:",
+                answers: [
+                    { text: "Blood Agar", correct: true },
+                    { text: "Thayer Martin media", correct: false },
+                    { text: "Wilson Blair media", correct: false },
+                    { text: "LJ medium", correct: false },
+                    { text: "Chocolate medium", correct: false },
+                ]
+            },
+            {
+                question: "Wet Mount microscopy is prosedure to observe:",
+                answers: [
+                    { text: "motility", correct: true },
+                    { text: "capsule", correct: false },
+                    { text: "spore", correct: false },
+                    { text: "cell wall", correct: false },
+                    { text: "DNA", correct: false },
+                ]
+            },
+            {
+                question: "A laboratory assistant accidentally cuts their hand while handling glassware. What is the appropriate first aid response to this situation?",
+                answers: [
+                    { text: "Wash the wound with soap and water, then apply an antiseptic and bandage", correct: true },
+                    { text: "Ignore the cut and continue working", correct: false },
+                    { text: "Apply a tourniquet above the wound to stop bleeding", correct: false },
+                    { text: "Use an alcohol swab to clean the wound", correct: false },
+                    { text: "Rinse the wound with saline solution", correct: false },
+                ]
+            },
+            {
+                question: "A microbiology student is tasked with observing the surface structures of bacterial cells. Which microscope would be most suitable for this purpose?",
+                answers: [
+                    { text: "Scanning electron microscope", correct: true },
+                    { text: "Compound microscope", correct: false },
+                    { text: "Fluorescence microscope", correct: false },
+                    { text: "Phase-contrast microscope", correct: false },
+                    { text: "Dark-field microscope", correct: false },
+                ]
+            },
+            {
+                question: "What is the purpose of an immersion oil in microscopy?",
+                answers: [
+                    { text: "To improve resolution by reducing light scattering", correct: true },
+                    { text: "To increase the magnification of the specimen", correct: false },
+                    { text: "To enhance contrast between the specimen and the background", correct: false },
+                    { text: "To protect the objective lens from damage", correct: false },
+                    { text: "To prevent evaporation of the specimen", correct: false },
+                ]
+            },
+            {
+                question: "A microbiologist is performing a simple staining procedure to visualize bacterial morphology. Which of the following dyes would be most suitable for this purpose?",
+                answers: [
+                    { text: "Methylene blue", correct: true },
+                    { text: "Crystal violet", correct: false },
+                    { text: "Safranin", correct: false },
+                    { text: "Carbolfuchsin", correct: false },
+                    { text: "Congo red", correct: false },
+                ]
+            },
+            {
+                question: "Which intracellular parasite is responsible for causing Rocky Mountain spotted fever?",
+                answers: [
+                    { text: "Rickettsia", correct: true },
+                    { text: "Mycoplasma", correct: false },
+                    { text: "Chlamydia", correct: false },
+                    { text: "Protozoa", correct: false },
+                    { text: "Virus", correct: false },
+                ]
+            },
+            {
+                question: "A medical laboratory receives a specimen suspected to contain Chlamydia trachomatis. Which staining method would be most appropriate for visualizing this intracellular parasite?",
+                answers: [
+                    { text: "Giemsa staining", correct: true },
+                    { text: "Gram staining", correct: false },
+                    { text: "Acid-fast staining", correct: false },
+                    { text: "India ink staining", correct: false },
+                    { text: "Ziehl-Neelsen staining", correct: false },
+                ]
+            },
+            {
+                question: "A veterinary clinic encounters a case of cutaneous mycosis in a dog. Upon examination under a microscope, the veterinarian observes septate hyphae with conidiophores and conidia. Which fungal genus is most likely responsible for this infection?",
+                answers: [
+                    { text: "Aspergillus", correct: true },
+                    { text: "Candida", correct: false },
+                    { text: "Mucor", correct: false },
+                    { text: "Cryptococcus", correct: false },
+                    { text: "Trichophyton", correct: false },
+                ]
+            },
+            {
+                question: "Which staining method is commonly used to detect the presence of acid-fast bacteria such as Mycobacterium tuberculosis?",
+                answers: [
+                    { text: "Ziehl-Neelsen staining", correct: true },
+                    { text: "Gram staining", correct: false },
+                    { text: "Schaeffer-Fulton staining", correct: false },
+                    { text: "Capsule staining", correct: false },
+                    { text: "India ink staining", correct: false },
+                ]
+            },
+            {
+                question: "A medical laboratory receives a clinical specimen suspected to contain acid-fast bacteria. Which staining method should be used to confirm the presence of these bacteria?",
+                answers: [
+                    { text: "Ziehl-Neelsen staining", correct: true },
+                    { text: "Gram staining", correct: false },
+                    { text: "Schaeffer-Fulton staining", correct: false },
+                    { text: "Capsule staining", correct: false },
+                    { text: "Endospore staining", correct: false },
+                ]
+            },
+            {
+                question: "All organisms require at least small amounts of carbondioxide, However, some can use CO2 as their sole source of carbon, Such organisms are termed as",
+                answers: [
+                    { text: "Autotrophs", correct: true },
+                    { text: "Phototrophs", correct: false },
+                    { text: "Chemotrophs", correct: false },
+                    { text: "Photo-organotrophs", correct: false },
+                    { text: "parasites", correct: false },
+                ]
+            },
+            {
+                question: "For bacterial growth, a single cell elongates in size before it divides into two, in a process called binary fission. During cell grows, ",
+                answers: [
+                    { text: "new peptidoglycan synthesis is required along with the hydrolysis of bonds linking the old peptidoglycan chains", correct: true },
+                    { text: "new peptidoglycan synthesis is required but no hydrolysis of the old peptidoglycan occurs", correct: false },
+                    { text: "the old peptidoclycan is completely degraded and replaced with the newly synthesized longer polymer", correct: false },
+                    { text: "newly sinthesyzed peptidoglycan is utilized to deposit a new layer of the peptidoclycan in the cell wall", correct: false },
+                    { text: "nothing happens", correct: false },
+                ]
+            },
+            {
+                question: "Microaerophilic bacteria are those which require",
+                answers: [
+                    { text: "low levels of oxygen for growth (lesser than O2 present in atmosphere)", correct: true },
+                    { text: "21 % oxygen for growth", correct: false },
+                    { text: "prefers to grow without oxygen", correct: false },
+                    { text: "oxygen for activation of enzymes", correct: false },
+                    { text: "is killed by oxygen", correct: false },
+                ]
+            },
+            {
+                question: "A culture broth tube was very turbid at the surface but clear throughout the rest of the tube. What indicates this?",
+                answers: [
+                    { text: "organism are aerobes", correct: true },
+                    { text: "organism should be grown in an anaerobic chamber", correct: false },
+                    { text: "organism cannot produce superoxide dismutase and/or catalase", correct: false },
+                    { text: "organism cannot tolerate oxygen", correct: false },
+                    { text: "All of these", correct: false },
+                ]
+            },
+            {
+                question: "If a canning procedure is not properly followed, which type of microbe is most likely to grow in the canned food?",
+                answers: [
+                    { text: "Obligate Anaerobe", correct: true },
+                    { text: "Obligate Aerobe", correct: false },
+                    { text: "Acidophilic", correct: false },
+                    { text: "Mesophilic", correct: false },
+                    { text: "facultative anaerobes", correct: false },
+                ]
+            },
+            {
+                question: "For cultivation of anaerobes used special culture media, because anaerobes grow without oxygen, so which of the following culture medium is used for cultivation of anaerobic microorganisms?",
+                answers: [
+                    { text: "Kitta-Tarozzi medium and Wilson-Blair;", correct: true },
+                    { text: "Ploskirev's and Kitta-Tarozzi mediums ;", correct: false },
+                    { text: "Mackonkey agar", correct: false },
+                    { text: "Wilson-Blair medium and meat and peptone broth;", correct: false },
+                    { text: "meat and peptone broth and Ploskirev's medium;", correct: false },
+                ]
+            },
+            {
+                question: "Which of the following method can be used to determine the number of bacteria quantitatively?",
+                answers: [
+                    { text: "Pour-plate and spread plate", correct: true },
+                    { text: "Streak-plate", correct: false },
+                    { text: "Spread-plate", correct: false },
+                    { text: "Pour plate", correct: false },
+                    { text: "Roll-tube technique", correct: false },
+                ]
+            },
+            {
+                question: "Among the following which is positive for coagulase test?",
+                answers: [
+                    { text: "Staphylococcus aureus", correct: true },
+                    { text: "Staphylococcus epidermidis", correct: false },
+                    { text: "Staphylococcus saprophyticus", correct: false },
+                    { text: "St. pneumonia", correct: false },
+                    { text: "St. viridans", correct: false },
+                ]
+            },
+            {
+                question: "Organic molecules that increase the rate of metabolic reactions with themselves changing are known as",
+                answers: [
+                    { text: "enzymes", correct: true },
+                    { text: "coenzymes", correct: false },
+                    { text: "All of these", correct: false },
+                    { text: "substrates", correct: false },
+                    { text: "reactants", correct: false },
+                ]
+            },
+            {
+                question: "Main function of an enzyme is to",
+                answers: [
+                    { text: "decrease the activation energy", correct: true },
+                    { text: "increase the activation energy", correct: false },
+                    { text: "All of these", correct: false },
+                    { text: "maintain constant activation energy", correct: false },
+                    { text: "none of these", correct: false },
+                ]
+            },
+            {
+                question: "Some media contains specific ingredients or chemicals that allow the observer to visually distinguish which species possess and which species lack a specific biochemical process. Culture mediums that allow the identification and differentiation of microorganisms according to biochemical properties is:",
+                answers: [
+                    { text: "differential diagnostic", correct: true },
+                    { text: "accumulation medium", correct: false },
+                    { text: "elective", correct: false },
+                    { text: "special", correct: false },
+                    { text: "antrobic medium", correct: false },
+                ]
+            },
+            {
+                question: "EMB agar is a medium used in the identification and isolation of pathogenic bacteria. It contains digested meat proteins as a source of organic nutrients. Two indicator dyes, eosin and methylene blue, inhibit the growth of gram-positive bacteria and distinguish between lactose fermenting and nonlactose fermenting organisms. Lactose fermenters form metallic green or deep purple colonies, whereas the nonlactose fermenters form completely colorless colonies. EMB agar is an example of which of the following?",
+                answers: [
+                    { text: "a selective medium, a differential medium, and a complex medium", correct: true },
+                    { text: "a selective medium only", correct: false },
+                    { text: "a differential medium only", correct: false },
+                    { text: "a selective medium and a chemically defined medium", correct: false },
+                    { text: "a complex medium only", correct: false },
+                ]
+            },
+            {
+                question: "Agar conc. In nutrient agar is:",
+                answers: [
+                    { text: "0.02", correct: true },
+                    { text: "0.04", correct: false },
+                    { text: "0.03", correct: false },
+                    { text: "0.01", correct: false },
+                    { text: "0.05", correct: false },
+                ]
+            },
+            {
+                question: "To prevent swarming the % agar in Nutrient agar has to be increased at least to ___% ?",
+                answers: [
+                    { text: "0.06", correct: true },
+                    { text: "0.02", correct: false },
+                    { text: "0.04", correct: false },
+                    { text: "0.1", correct: false },
+                    { text: "0.08", correct: false },
+                ]
+            },
+            {
+                question: "Kala-azar in India is caused by ",
+                answers: [
+                    { text: "P. argentipes", correct: true },
+                    { text: "P. papatasi", correct: false },
+                    { text: "P. serpenti", correct: false },
+                    { text: "Taenia saginata", correct: false },
+                    { text: " Oncocercus", correct: false },
+                ]
+            },
+            {
+                question: "Amoebic liver abscess can be diagnosed by demonstrating:",
+                answers: [
+                    { text: "Trophozoites in the pus", correct: true },
+                    { text: "Cysts in the sterile pus", correct: false },
+                    { text: "Indirect hemagglutination test", correct: false },
+                    { text: "Cysts in the intestine", correct: false },
+                    { text: "Trophozoites in the faces", correct: false },
+                ]
+            },
+            {
+                question: "Which one of the following does not pass through the lungs ",
+                answers: [
+                    { text: "Enterobius Vermicularis", correct: true },
+                    { text: "Hookworm", correct: false },
+                    { text: "Ascaris", correct: false },
+                    { text: "Strongyloidis", correct: false },
+                    { text: "Plasmodium.malaria", correct: false },
+                ]
+            },
+            {
+                question: "An anxious mother brought her 4 year old daughter to the pediatrician. The girl was passing loose bulky stools for the past 20 days. This was often associated with pain in abdomen. The pediatrician ordered the stool examination, which showed the following organisms. Identify the organism",
+                answers: [
+                    { text: "Giardia lamblia", correct: true },
+                    { text: "Entamoeba histolytica", correct: false },
+                    { text: "Trichinella", correct: false },
+                    { text: "Cryptosporidium", correct: false },
+                    { text: "E.coli", correct: false },
+                ]
+            },
+            {
+                question: "A laboratory technician is tasked with sterilizing glassware for microbiological experiments. What method should they employ to ensure complete sterilization?",
+                answers: [
+                    { text: "Steam sterilization at 100°C for 30 minutes", correct: true },
+                    { text: "Washing with soap and water", correct: false },
+                    { text: "Dry heat sterilization at 160°C for 2 hours", correct: false },
+                    { text: "Immersion in iodine solution for 30 minutes", correct: false },
+                    { text: "Flash sterilization at 134°C for 3 minutes", correct: false },
+                ]
+            },
+            {
+                question: "Steam sterilization at 100°C for 30 minutes Situation: A dentist's office needs to sterilize dental instruments between patient appointments. Which of the following methods would be the most practical and effective for this purpose?",
+                answers: [
+                    { text: "Autoclaving at 121°C for 20 minutes", correct: true },
+                    { text: "Ethylene oxide gas sterilization", correct: false },
+                    { text: "Boiling instruments in water for 5 minutes", correct: false },
+                    { text: "Dry heat sterilization at 180°C for 1 hour", correct: false },
+                    { text: "Wiping instruments with disinfectant wipes", correct: false },
+                ]
+            },
+            {
+                question: "Which of the following is the most common location of intracranial neurocysticerosis ?",
+                answers: [
+                    { text: "Brain parenchyma", correct: true },
+                    { text: "Subarachnoid space", correct: false },
+                    { text: "Spinal cord", correct: false },
+                    { text: "Orbit", correct: false },
+                    { text: "The ventricles", correct: false },
+                ]
+            },
+            {
+                question: "Cause of epilepsy in upto 50% Indian patients is",
+                answers: [
+                    { text: "Neurocysticercosis", correct: true },
+                    { text: "Cerebral malaria ", correct: false },
+                    { text: "Toxoplasmosis", correct: false },
+                    { text: "Cerebral hydatid cyst", correct: false },
+                    { text: "H.nana", correct: false },
+                ]
+            },
+            {
+                question: "On microscopic examination eggs are seen, but on saturation with salt solution no eggs are seen, The eggs are likely to be of ",
+                answers: [
+                    { text: "Taenia solium", correct: true },
+                    { text: "Trichuris trichura", correct: false },
+                    { text: "T. Solium", correct: false },
+                    { text: "Ascaris lumbricoides", correct: false },
+                    { text: "Ancylostoma duodenale", correct: false },
+                ]
+            },
+            {
+                question: "A patient present with diarrhoea. Analysis of stool on wet mount shows mobile protozoa without RBCs and pus cells. the Diagnosis is ",
+                answers: [
+                    { text: "Giardiasis", correct: true },
+                    { text: "Balantidium coli", correct: false },
+                    { text: "Entamoeba histolytica", correct: false },
+                    { text: "Trichomonas hominis", correct: false },
+                    { text: "nan", correct: false },
+                ]
+            },
+            {
+                question: "Sputum examination is not useful in diagnosis of",
+                answers: [
+                    { text: "Trichuriasis trichura", correct: true },
+                    { text: "Ancylostoma duodenale", correct: false },
+                    { text: "Paragonimus", correct: false },
+                    { text: "Strongyloides", correct: false },
+                    { text: "Kala-azar", correct: false },
+                ]
+            },
+            {
+                question: "Disinfection of water by routine chlorination is classified under:",
+                answers: [
+                    { text: "Pre-current Disinfection", correct: true },
+                    { text: "Sterilization", correct: false },
+                    { text: "Disinfection", correct: false },
+                    { text: "Terminal Disinfection", correct: false },
+                    { text: "Sporicidal agent", correct: false },
+                ]
+            },
+            {
+                question: "Mac-conkeys Agar medium is :",
+                answers: [
+                    { text: "Differential medium", correct: true },
+                    { text: "Enriched medium", correct: false },
+                    { text: "Enrichment medium", correct: false },
+                    { text: "Nutrient medium", correct: false },
+                    { text: "Synthetic medium", correct: false },
+                ]
+            },
+            {
+                question: "Variable portion of an immunoglobulin",
+                answers: [
+                    { text: "Amino terminal", correct: true },
+                    { text: "Carboxy terminal", correct: false },
+                    { text: "Acid terminal", correct: false },
+                    { text: "Amoxy terminal", correct: false },
+                    { text: "Hinge region", correct: false },
+                ]
+            },
+            {
+                question: "The class of immunoglobulin present in highest concentration in the blood of a human newborn is",
+                answers: [
+                    { text: "IgG", correct: true },
+                    { text: "IgM", correct: false },
+                    { text: "IgA", correct: false },
+                    { text: "IgD", correct: false },
+                    { text: "IgE", correct: false },
+                ]
+            },
+            {
+                question: "Which of the following cell types are responsible for initiating a secondary immune response? ",
+                answers: [
+                    { text: "Memory cells ", correct: true },
+                    { text: "Macrophages", correct: false },
+                    { text: "Stem cells ", correct: false },
+                    { text: "B cells ", correct: false },
+                    { text: "T cells", correct: false },
+                ]
+            },
+            {
+                question: "Lab procedures that result in agglutination usually following reaction with antibodies and antigenic determinants on particles is ",
+                answers: [
+                    { text: "Agglutination", correct: true },
+                    { text: "Bound Complement reaction", correct: false },
+                    { text: "Precipitation", correct: false },
+                    { text: "Hemolysis", correct: false },
+                    { text: "Bacteriolysis", correct: false },
+                ]
+            },
+            {
+                question: "Complement lyses cells by:",
+                answers: [
+                    { text: "Insertion of complement proteins into the cell membrane", correct: true },
+                    { text: "Enzymatic digestion of the cell membrane", correct: false },
+                    { text: "Activation of adenylate cyclase", correct: false },
+                    { text: "None of these ", correct: false },
+                    { text: "Inhibition of elongation factor-2", correct: false },
+                ]
+            },
+            {
+                question: "A 50-year-old woman with severe rheumatoid arthritis is started on infliximab (anti-tumor necrosis factor-alpha). This therapy has been shown to increase the production of CD25-positive T cell. Which of the followings is likely, therefore, to become elevated in this patient?",
+                answers: [
+                    { text: "Interleukin-10", correct: true },
+                    { text: "Interferon-gamma", correct: false },
+                    { text: "Interleukin-1", correct: false },
+                    { text: "Interleukin-2", correct: false },
+                    { text: "Transforming growth factor-beta", correct: false },
+                ]
+            },
+            {
+                question: "Tuberculin test is reaction of :",
+                answers: [
+                    { text: "Antibody mediated", correct: true },
+                    { text: "Anaphyxis mediated", correct: false },
+                    { text: "Cell mediated", correct: false },
+                    { text: "All of these ", correct: false },
+                    { text: "Immuno complex mediated", correct: false },
+                ]
+            },
+            {
+                question: "Which of the following is true about anaphylaxis:",
+                answers: [
+                    { text: "All of the above", correct: true },
+                    { text: "It is mediated by allergen specific IgG", correct: false },
+                    { text: "Type-I hypersensitivity reaction", correct: false },
+                    { text: "Cytokines like IL4, IL5 and IL6 along with histamine is released", correct: false },
+                    { text: "None of these", correct: false },
+                ]
+            },
+            {
+                question: "Which is an example of type-III hypersenstivity :",
+                answers: [
+                    { text: "Serum sickness", correct: true },
+                    { text: "Contact dermatitis", correct: false },
+                    { text: "Hemolytic anemia", correct: false },
+                    { text: "Tonsillitis", correct: false },
+                    { text: "Good pasture", correct: false },
+                ]
+            },
+            {
+                question: "A city sanitation worker is struck by a car and his leg is crushed against his sanitation truck. The extreme trauma to the leg necessitates amputation above the knee. Although the patient's health records reflect a tetanus booster 6 years ago, the man is revaccinated and human, pooled antitetanus immunoglobulin is injected around the macerated tissue. Administration of immunoglobulin is an example of which of the following forms of immunization?",
+                answers: [
+                    { text: "Artificial passive", correct: true },
+                    { text: "Adaptive", correct: false },
+                    { text: "Artificial active", correct: false },
+                    { text: "Natural passive", correct: false },
+                    { text: "Natural active", correct: false },
+                ]
+            },
+            {
+                question: "A young female having a urinary tract infection on urine C/S there is E. Colisensitive to cephalosporin. The primary mechanism of antibacterial action of cephlosporins involves",
+                answers: [
+                    { text: "Inhibition of Reaction involving transpeptidation", correct: true },
+                    { text: "Production of Beta- Lactamases", correct: false },
+                    { text: "Inhibition of Cell membrane synthesis", correct: false },
+                    { text: "None of these", correct: false },
+                    { text: "Decreasing Synthesis of N- acetyl muramic acid el Preventing Trans glycosylation", correct: false },
+                ]
+            },
+            {
+                question: " Which bacteria belong to the group of gram-negative?",
+                answers: [
+                    { text: "Neisseria meningitidis", correct: true },
+                    { text: "Staphylococcus aureus", correct: false },
+                    { text: "Enterococcus faecalis", correct: false },
+                    { text: "Streptococcus pyogenes", correct: false },
+                    { text: "Chlamydia trachomatis", correct: false },
+                ]
+            },
+            {
+                question: "Which methods are used to diagnose meningococci in clinical samples?",
+                answers: [
+                    { text: "Latex agglutination", correct: true },
+                    { text: "Gram staining", correct: false },
+                    { text: "Immunofluorescence", correct: false },
+                    { text: "Western blot", correct: false },
+                    { text: "PCR", correct: false },
+                ]
+            },
+            {
+                question: "What factors can influence the effectiveness of vaccination against meningococci?",
+                answers: [
+                    { text: "Presence of antibodies in the body", correct: true },
+                    { text: "Microorganism invasiveness", correct: false },
+                    { text: "Climatic conditions", correct: false },
+                    { text: "Vaccination interval", correct: false },
+                    { text: "Genetic factors", correct: false },
+                ]
+            },
+            {
+                question: ": How is the microbiological diagnosis of tuberculosis conducted?",
+                answers: [
+                    { text: "Culture methods and microscopy of smears", correct: true },
+                    { text: "Enzyme-linked immunosorbent assay (ELISA)", correct: false },
+                    { text: "Intradermal tests", correct: false },
+                    { text: "Serological tests", correct: false },
+                    { text: "PCR (polymerase chain reaction)", correct: false },
+                ]
+            },
+            {
+                question: "Which bacteria are associated with urinary tract infections?",
+                answers: [
+                    { text: "Proteus and Mycobacterium tuberculosis", correct: true },
+                    { text: "Corynebacterium diphtheriae", correct: false },
+                    { text: "E. coli and Salmonella typhi", correct: false },
+                    { text: "Vibrio cholera and Campylobacters", correct: false },
+                    { text: "Corynebacterium diphtheriae and Bordetella pertussis", correct: false },
+                ]
+            },
+            {
+                question: "What is the mechanism of action of the toxin causing gas gangrene?",
+                answers: [
+                    { text: "Cytotoxin", correct: true },
+                    { text: "Endotoxin", correct: false },
+                    { text: "Neurotoxin", correct: false },
+                    { text: "Enterotoxin", correct: false },
+                    { text: "Exotoxin", correct: false },
+                ]
+            },
+            {
+                question: "Which of the following is an antimicrobial susceptibility testing?",
+                answers: [
+                    { text: "Kirby Bauer method", correct: true },
+                    { text: "ATCC", correct: false },
+                    { text: "NCTC", correct: false },
+                    { text: "Stokes method", correct: false },
+                    { text: "B&C", correct: false },
+                ]
+            },
+            {
+                question: "What method is used to treat botulism?",
+                answers: [
+                    { text: "Administration of antitoxin", correct: true },
+                    { text: "Lymphadenopathy, fever", correct: false },
+                    { text: "Antibiotic administration", correct: false },
+                    { text: "Vaccination", correct: false },
+                    { text: " Immunotherapy", correct: false },
+                ]
+            },
+            {
+                question: "How is brucellosis transmitted to humans?",
+                answers: [
+                    { text: "Consumption of undercooked meat and milk from infected animals", correct: true },
+                    { text: "Lymphadenopathy, fever", correct: false },
+                    { text: "Mosquito bites", correct: false },
+                    { text: "Through contaminated water", correct: false },
+                    { text: "Airborne transmission", correct: false },
+                ]
+            },
+            {
+                question: "What symptoms are characteristic of listeriosis?",
+                answers: [
+                    { text: "Flu-like symptoms, meningitis", correct: true },
+                    { text: "Haemorrhage", correct: false },
+                    { text: "Muscle weakness, paralysis", correct: false },
+                    { text: "Gastrointestinal disorders, diarrhea", correct: false },
+                    { text: "Lymphadenopathy, fever", correct: false },
+                ]
+            },
+            {
+                question: "How is syphilis transmitted?",
+                answers: [
+                    { text: "Sexually and vertically from mother to child", correct: true },
+                    { text: "Through food", correct: false },
+                    { text: "Airborne transmission", correct: false },
+                    { text: "Through mosquito bites", correct: false },
+                    { text: "Consumption of contaminated water", correct: false },
+                ]
+            },
+            {
+                question: "Which organs and systems are more commonly affected by infections caused by Mycoplasma pneumoniae?",
+                answers: [
+                    { text: "Respiratory system", correct: true },
+                    { text: "Reproductive system", correct: false },
+                    { text: "Liver and kidneys", correct: false },
+                    { text: "Central nervous system", correct: false },
+                    { text: "Musculoskeletal system", correct: false },
+                ]
+            },
+            {
+                question: "How is Mycoplasma pneumoniae transmitted?",
+                answers: [
+                    { text: "Airborne transmission", correct: true },
+                    { text: "Through blood ", correct: false },
+                    { text: "Sexually", correct: false },
+                    { text: "Contact with infected animals", correct: false },
+                    { text: "Through mosquito bites", correct: false },
+                ]
+            },
+            {
+                question: "Electron microscopy is helpful in diagnosis of",
+                answers: [
+                    { text: "Rota virus", correct: true },
+                    { text: "RSV", correct: false },
+                    { text: "Herpes virus", correct: false },
+                    { text: "Prion", correct: false },
+                    { text: "Inluenza", correct: false },
+                ]
+            },
+            {
+                question: "With which of the following of viral hepatitis infection in pregnancy, the maternal mortality is highest:",
+                answers: [
+                    { text: "Hepatitis E", correct: true },
+                    { text: "Hepatitis A", correct: false },
+                    { text: "Hepatitis B", correct: false },
+                    { text: "Hepatitis C", correct: false },
+                    { text: "Hepatitis D", correct: false },
+                ]
+            },
+            {
+                question: "A mother is HBs Ag positive at 32 weeks of pregnancy. What should be given to the newborn to prevent neonatal infection",
+                answers: [
+                    { text: "Hepatitis B vaccine + immunoglobulins", correct: true },
+                    { text: "Immunoglobulins only", correct: false },
+                    { text: "Hepatitis B vaccine only", correct: false },
+                    { text: "Immunoglobulins followed by vaccine 1 month later", correct: false },
+                    { text: "No vaccine+ Immunoglobulins", correct: false },
+                ]
+            },
+            {
+                question: "All of the following rabies vaccines are commercially available except",
+                answers: [
+                    { text: "Recombinant glycoprotein", correct: true },
+                    { text: "Purified chick embryo cell vaccine (PCEC", correct: false },
+                    { text: "Human diploid cell vaccine", correct: false },
+                    { text: "Vero continuous cell vaccine", correct: false },
+                    { text: "Duck Egg Vaccine", correct: false },
+                ]
+            },
+            {
+                question: "Mad cow disease is due to ",
+                answers: [
+                    { text: "Slow virus", correct: true },
+                    { text: "Mycoplasma", correct: false },
+                    { text: "Bacteria", correct: false },
+                    { text: "Fungus", correct: false },
+                    { text: "Rickettsia", correct: false },
+                ]
+            },
+            {
+                question: "Bitten dog should be observed for at least",
+                answers: [
+                    { text: "10 days", correct: true },
+                    { text: "5 days", correct: false },
+                    { text: "28 days", correct: false },
+                    { text: "15 days", correct: false },
+                    { text: "21 days", correct: false },
+                ]
+            },
+            {
+                question: "According to drug and cosmetic act which is not mandatory for screening of donated blood",
+                answers: [
+                    { text: "West Nile virus", correct: true },
+                    { text: "HIV", correct: false },
+                    { text: "Hepatitis B", correct: false },
+                    { text: "Hepatitis C", correct: false },
+                    { text: "CMV", correct: false },
+                ]
+            },
+            {
+                question: "Immunocompromised patient due to transplantation is suffering from pyrexia and neutropenia. Most likely cause is",
+                answers: [
+                    { text: "CMV", correct: true },
+                    { text: "HSV", correct: false },
+                    { text: "Proteus", correct: false },
+                    { text: "Gram ‘-’ ve organism", correct: false },
+                    { text: "Gram ‘+’ ve organism", correct: false },
+                ]
+            },
+            {
+                question: "Congenital syphilis can be best diagnosed by",
+                answers: [
+                    { text: "IgM FTA – ABS", correct: true },
+                    { text: "IgG FTA – ABS", correct: false },
+                    { text: "VDRL", correct: false },
+                    { text: "TPI", correct: false },
+                    { text: "FTA ABS", correct: false },
+                ]
+            },
+            {
+                question: "A 30 year old lady delivered a healthy baby at 37 week of gestation. She was a known case of chronic hepatitis B infection. She was positive for HBsAg but negative for HBcAg. Which of the following is the most appropriate treatment for the baby ?",
+                answers: [
+                    { text: "Both active and passive immunization soon after birth", correct: true },
+                    { text: "Passive immunization soon after birth and active immunization at 1 year of age", correct: false },
+                    { text: "Only passive immunization soon after birth", correct: false },
+                    { text: "Only active immunization soon after birth", correct: false },
+                    { text: "Give antiviral therapy", correct: false },
+                ]
+            },
+            {
+                question: "A resident doctor sustained a needle stick injury while sampling blood of a patient who is HIV positive. A decision is taken to offer him post-exposure prophylaxis. Which one of the following would be the best recommendation?",
+                answers: [
+                    { text: "Zidovudine + Lamivudine + Indinavir for 4 weeks", correct: true },
+                    { text: "Zidovudine + Lamivudine for 4 weeks", correct: false },
+                    { text: "Zidovudine + Lamivudine Nevirapine for 4 weeks", correct: false },
+                    { text: "Zidovudine + Lamivudine Nevirapine for 2 weeks", correct: false },
+                    { text: "○ Zidovudine + Stavudine + nevirapine for 4 weeks", correct: false },
+                ]
+            },
+            {
+                question: "Which of the following is not a features of Weil’s disease",
+                answers: [
+                    { text: "Hepatic encephalitis", correct: true },
+                    { text: "Fever & jaundice", correct: false },
+                    { text: "All", correct: false },
+                    { text: "Renal failure", correct: false },
+                    { text: "Conjunctival hyperaemia and Skin purpura", correct: false },
+                ]
+            },
+            {
+                question: "A mother delivers a baby three days after developing chickenpox. Which of the following is true?",
+                answers: [
+                    { text: "Baby has a risk of congenital Varicella infection", correct: true },
+                    { text: "No risk to both mother and baby", correct: false },
+                    { text: "Give antibiotocs treatment to mother", correct: false },
+                    { text: "Give antiviral treatment to mother", correct: false },
+                    { text: "Give antiviral treatment to mother", correct: false },
+                ]
+            },
+            {
+                question: "A 40 year old man underwent kidney transplantation. Two months after transplantation, he developed fever and feature suggestive of bilateral diffuse interstitial pneumonitis. Which of the following is most likely etiologic agent",
+                answers: [
+                    { text: "Cytomegalovirus", correct: true },
+                    { text: "Herpes simplex virus", correct: false },
+                    { text: "Adenovirus", correct: false },
+                    { text: "Epstein Barr virus", correct: false },
+                    { text: "Varicella – zoster virus MULTIPLE", correct: false },
+                ]
+            },
+            {
+                question: "A pregnant woman seeks prenatal care in an area with ongoing Zika virus transmission. What is the recommended diagnostic approach to assess her Zika virus infection status?",
+                answers: [
+                    { text: "Detection of Zika virus RNA in amniotic fluid by RT-PCR", correct: true },
+                    { text: "IgG serological testing for Zika virus antibodies", correct: false },
+                    { text: "Culture of urine samples for Zika virus isolation", correct: false },
+                    { text: "Immunohistochemistry on placental tissue", correct: false },
+                    { text: "Direct visualization of Zika virus particles in maternal blood smear", correct: false },
+                ]
+            },
+            {
+                question: "Most common Aspergillus infection in humans",
+                answers: [
+                    { text: "Aspergillus fumigatus", correct: true },
+                    { text: "Aspergillus niger", correct: false },
+                    { text: "Aspergillus flavus", correct: false },
+                    { text: "Aspergillus oryzae", correct: false },
+                    { text: "Aspergillus nidulans", correct: false },
+                ]
+            },
+            {
+                question: "Branched septate hyphae found on corneal smear in a case of corneal ulcer is:",
+                answers: [
+                    { text: "Aspergillus", correct: true },
+                    { text: " Candida", correct: false },
+                    { text: "Mucor", correct: false },
+                    { text: "Rhizopus", correct: false },
+                    { text: "Histoplasma", correct: false },
+                ]
+            },
+            {
+                question: "Drugs used in treatment of Aspergillosis",
+                answers: [
+                    { text: "Itraconazole", correct: true },
+                    { text: "Voriconazole", correct: false },
+                    { text: "Clotrimazole", correct: false },
+                    { text: "Amphotericin B", correct: false },
+                    { text: "Cotrimoxazole", correct: false },
+                ]
+            },
+            {
+                question: "True about mucormycosis is:",
+                answers: [
+                    { text: "All of these", correct: true },
+                    { text: "Nose is a common site", correct: false },
+                    { text: "Diabetics is common predisposing factor", correct: false },
+                    { text: "Common in India", correct: false },
+                    { text: "Affects the lungs after inhaling spores", correct: false },
+                ]
+            },
+            {
+                question: "Which of the following dermatophyte genus is capable of invading the hair, skin, and nails?",
+                answers: [
+                    { text: "Trichophyton", correct: true },
+                    { text: "Candida", correct: false },
+                    { text: "Epidermophyton", correct: false },
+                    { text: "Microsporum", correct: false },
+                    { text: "Histoplasma", correct: false },
+                ]
+            },
+            {
+                question: "Blastomycosis is characterized by all, except :",
+                answers: [
+                    { text: "Common in South America", correct: true },
+                    { text: "Yeast like fungus", correct: false },
+                    { text: "Fungal infection caused by Blastomyces dermatitidis", correct: false },
+                    { text: "Dimorphic fungus", correct: false },
+                    { text: " It presents as a pulmonary infection after the inhalation of spores", correct: false },
+                ]
+            },
+            {
+                question: "All of the following regarding histoplasmosis are true except :",
+                answers: [
+                    { text: "Very rare in patients with AIDS", correct: true },
+                    { text: "Bone marrow is involved", correct: false },
+                    { text: "Gomori methamine silver stain used", correct: false },
+                    { text: "Dimorphic fungus", correct: false },
+                    { text: "None of the above", correct: false },
+                ]
+            },
+            {
+                question: "This organism forms \"rosette-like\" cluster in young cultures; conidia also form singly along the hyphae. At 35-37 degrees, round, oval and fusiform budding cells of various sizes often called, \"cigar bodies\" are seen.",
+                answers: [
+                    { text: "Sporothrix schenckii", correct: true },
+                    { text: "Histoplasma capsulatum", correct: false },
+                    { text: "Blastomyces dermatitidis", correct: false },
+                    { text: "Paracoccidioides brasiliensis", correct: false },
+                    { text: "Penicillium marneffei", correct: false },
+                ]
+            },
+            {
+                question: "Cryptococcus is least likely to cause infection of:",
+                answers: [
+                    { text: "Kidney", correct: true },
+                    { text: "Skin", correct: false },
+                    { text: "Bone", correct: false },
+                    { text: "Brain", correct: false },
+                    { text: "Central nervous system ", correct: false },
+                ]
+            },
+            {
+                question: "Pneumocystis carinii is diagnosed by",
+                answers: [
+                    { text: "Silver nitrate staining", correct: true },
+                    { text: "Leishmann staining", correct: false },
+                    { text: "Fontana staining", correct: false },
+                    { text: "Acid fast staining", correct: false },
+                    { text: "Albert staining", correct: false },
+                ]
+            },
+            {
+                question: "Drugs of choice in Giardiasis is ",
+                answers: [
+                    { text: "Metronidazole/Tinidazole", correct: true },
+                    { text: "Albendazole", correct: false },
+                    { text: "Thiabendazole", correct: false },
+                    { text: "Diloxanide furoate", correct: false },
+                    { text: "Doxycycline", correct: false },
+                ]
+            },
+            {
+                question: "Which of the following is the most common location of intracranial neurocysticerosis ?",
+                answers: [
+                    { text: "Brain parenchyma", correct: true },
+                    { text: "Subarachnoid space", correct: false },
+                    { text: "Spinal cord", correct: false },
+                    { text: "Orbit", correct: false },
+                    { text: "The ventricles", correct: false },
+                ]
+            },
+            {
+                question: "Vaginal discharge of Trichomonas vaginalis vaginitis is ",
+                answers: [
+                    { text: "Greenish frothy ", correct: true },
+                    { text: "Thin & watery ", correct: false },
+                    { text: "Has no smell", correct: false },
+                    { text: "Curd- white ", correct: false },
+                    { text: "Blood- stained", correct: false },
+                ]
+            },
+            {
+                question: "Each of the following statements concerning malaria is correct, except:",
+                answers: [
+                    { text: "The principal site of gametocyte formation is the human gastrointestinal tract.      ", correct: true },
+                    { text: "The female anopheles mosquito is the vector", correct: false },
+                    { text: "Early infection, sporozoites enter hepatocytes", correct: false },
+                    { text: "Release of merozoites from red blood cells causes fever and chills", correct: false },
+                    { text: "Haemozoin released from Plasmodium infected ruptured RBCs is responsible for high fever and chills", correct: false },
+                ]
+            },
+            {
+                question: "Sabin-Feldman dye test is used in the diagnosis of:",
+                answers: [
+                    { text: "Toxoplasmosis", correct: true },
+                    { text: "Amoebiasis ", correct: false },
+                    { text: "Cryptosporidiosis ", correct: false },
+                    { text: "Trypanosomiasis ", correct: false },
+                    { text: "Malaria", correct: false },
+                ]
+            },
+            {
+                question: "Which of the following agent is used to prevent malaria",
+                answers: [
+                    { text: "Chloroquine", correct: true },
+                    { text: "Mebendazole", correct: false },
+                    { text: "Folic acid ", correct: false },
+                    { text: "Inactivated vaccine", correct: false },
+                    { text: "Zinc table", correct: false },
+                ]
+            },
+            {
+                question: "Definitive host for Guinea worm is ",
+                answers: [
+                    { text: "Man", correct: true },
+                    { text: "Cyclops", correct: false },
+                    { text: "Snail", correct: false },
+                    { text: "Cyclops and man", correct: false },
+                    { text: "Cow", correct: false },
+                ]
+            },
+            {
+                question: "All the following are True about Brugia malayi except ",
+                answers: [
+                    { text: "The tail tip is free from nuclei", correct: true },
+                    { text: "The intermediate hosts in the India are Mansoni", correct: false },
+                    { text: "Nematode", correct: false },
+                    { text: "Nuclei are blurred, so counting is difficult", correct: false },
+                    { text: "Adult worm is found in the lymphaitc system", correct: false },
+                ]
+            },
+            {
+                question: "Ascaris are best observed in human specimens by which one of the",
+                answers: [
+                    { text: "Dilution followed by egg count", correct: true },
+                    { text: "Sigmoidoscopy and aspiration of mucosal lesions", correct: false },
+                    { text: "Baermann technique", correct: false },
+                    { text: "Examination of a cellophane tape swab", correct: false },
+                    { text: "Enzyme immunoassay (EIA)", correct: false },
+                ]
+            },
+            {
+                question: "The cause of larva currents ",
+                answers: [
+                    { text: "Stronghyloides stercoralis", correct: true },
+                    { text: "Necator americansus", correct: false },
+                    { text: "Hookworm duodonale", correct: false },
+                    { text: "Hymenolepis nana", correct: false },
+                    { text: "F. hepatica", correct: false },
+                ]
+            },
+            {
+                question: "Auto infection is seen with",
+                answers: [
+                    { text: "Enterobius", correct: true },
+                    { text: "Trichuris trichura", correct: false },
+                    { text: "Ankylostoma duodenale", correct: false },
+                    { text: "Ascaris", correct: false },
+                    { text: "S. hematobium ", correct: false },
+                ]
+            },
+            {
+                question: "Patients with similar complaints applied to the doctor: weakness, pain in the intestines, disorder of GIT. Examination of the feces revealed that one patient with four nucleus cysts should be hospitalized immediately. For what protozoa are such cysts typical?",
+                answers: [
+                    { text: "Dysenteric amoeba", correct: true },
+                    { text: "Lamblia", correct: false },
+                    { text: "Intestinal amoeba", correct: false },
+                    { text: "Balantidium", correct: false },
+                    { text: "Trichomonas", correct: false },
+                ]
+            },
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let isAnswerMode = false;
+        let userAnswers = {};
+        let timerMinutes = 60;
+        let timerSeconds = 0;
+        let timerInterval;
+
+        // Initialize the quiz
+        function initializeQuiz() {
+            createQuestionGrid();
+            startTimer();
+            showQuestion();
+        }
+
+        // Create question status grid
+        function createQuestionGrid() {
+            const grid = document.getElementById('question-grid');
+            grid.innerHTML = '';
+            
+            questions.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'question-dot';
+                dot.textContent = index + 1;
+                dot.addEventListener('click', () => {
+                    currentQuestionIndex = index;
+                    showQuestion();
+                });
+                grid.appendChild(dot);
+            });
+        }
+
+        // Update question status in grid
+        function updateQuestionStatus() {
+            const dots = document.querySelectorAll('.question-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.remove('current', 'answered', 'unanswered');
+                
+                if (index === currentQuestionIndex) {
+                    dot.classList.add('current');
+                } else if (userAnswers[index] !== undefined) {
+                    dot.classList.add('answered');
+                } else {
+                    dot.classList.add('unanswered');
+                }
+            });
+        }
+
+        // Start timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (timerSeconds === 0) {
+                    if (timerMinutes === 0) {
+                        clearInterval(timerInterval);
+                        alert('Time is up!');
+                        showFinalScore();
+                        return;
+                    }
+                    timerMinutes--;
+                    timerSeconds = 59;
+                } else {
+                    timerSeconds--;
+                }
+                
+                const display = document.getElementById('timer-display');
+                display.textContent = `${timerMinutes} min ${timerSeconds.toString().padStart(2, '0')} sec`;
+            }, 1000);
+        }
+
+        // Show current question
+        function showQuestion() {
+            const question = questions[currentQuestionIndex];
+            
+            document.getElementById('question-number').textContent = currentQuestionIndex + 1;
+            document.getElementById('question-text').textContent = question.question;
+            
+            const answersContainer = document.getElementById('answer-options');
+            answersContainer.innerHTML = '';
+            
+            const optionLabels = ['A', 'B', 'C', 'D', 'E'];
+            
+            if (isAnswerMode) {
+                // Answer mode: show correct answer highlighted
+                question.answers.forEach((answer, index) => {
+                    const option = document.createElement('div');
+                    option.className = 'answer-option disabled';
+                    
+                    if (answer.correct) {
+                        option.classList.add('correct-answer-mode');
+                    } else {
+                        option.classList.add('other-answer-mode');
+                    }
+                    
+                    option.innerHTML = `
+                        <div class="option-label">${optionLabels[index]}</div>
+                        <div>${answer.text}</div>
+                    `;
+                    
+                    answersContainer.appendChild(option);
+                });
+            } else {
+                // Quiz mode: show selectable options
+                const shuffledAnswers = [...question.answers];
+                
+                // Shuffle answers
+                for (let i = shuffledAnswers.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffledAnswers[i], shuffledAnswers[j]] = [shuffledAnswers[j], shuffledAnswers[i]];
+                }
+                
+                shuffledAnswers.forEach((answer, index) => {
+                    const option = document.createElement('div');
+                    option.className = 'answer-option';
+                    option.dataset.correct = answer.correct;
+                    
+                    // Check if this question was already answered
+                    if (userAnswers[currentQuestionIndex] !== undefined) {
+                        option.classList.add('disabled');
+                        if (userAnswers[currentQuestionIndex] === index) {
+                            option.classList.add(answer.correct ? 'correct' : 'incorrect');
+                        } else if (answer.correct) {
+                            option.classList.add('correct');
+                        }
+                    } else {
+                        option.addEventListener('click', () => selectAnswer(index, answer.correct));
+                    }
+                    
+                    option.innerHTML = `
+                        <div class="option-label">${optionLabels[index]}</div>
+                        <div>${answer.text}</div>
+                    `;
+                    
+                    answersContainer.appendChild(option);
+                });
+            }
+            
+            updateNavigation();
+            updateQuestionStatus();
+        }
+
+        // Handle answer selection
+        function selectAnswer(selectedIndex, isCorrect) {
+            const options = document.querySelectorAll('.answer-option');
+            
+            userAnswers[currentQuestionIndex] = selectedIndex;
+            
+            if (isCorrect) {
+                score++;
+            }
+            
+            options.forEach((option, index) => {
+                option.classList.add('disabled');
+                option.removeEventListener('click', selectAnswer);
+                
+                if (index === selectedIndex) {
+                    option.classList.add(isCorrect ? 'correct' : 'incorrect');
+                } else if (option.dataset.correct === 'true') {
+                    option.classList.add('correct');
+                }
+            });
+            
+            updateNavigation();
+            updateQuestionStatus();
+        }
+
+        // Update navigation buttons
+        function updateNavigation() {
+            const backBtn = document.getElementById('back-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            backBtn.disabled = currentQuestionIndex === 0 && !isAnswerMode;
+            
+            if (isAnswerMode) {
+                nextBtn.textContent = 'Next';
+                nextBtn.disabled = false;
+            } else {
+                if (currentQuestionIndex === questions.length - 1) {
+                    nextBtn.textContent = 'Finish';
+                } else {
+                    nextBtn.textContent = 'Next';
+                }
+                nextBtn.disabled = userAnswers[currentQuestionIndex] === undefined;
+            }
+        }
+
+        // Show final score
+        function showFinalScore() {
+            const scoreDisplay = document.getElementById('score-display');
+            const scoreText = document.getElementById('score-text');
+            
+            scoreText.textContent = `Score: ${score}/${questions.length}`;
+            scoreDisplay.style.display = 'block';
+            
+            clearInterval(timerInterval);
+        }
+
+        // Event listeners
+        document.getElementById('back-btn').addEventListener('click', () => {
+            if (currentQuestionIndex > 0 || isAnswerMode) {
+                currentQuestionIndex = Math.max(0, currentQuestionIndex - 1);
+                if (isAnswerMode && currentQuestionIndex < 0) {
+                    currentQuestionIndex = questions.length - 1;
+                }
+                showQuestion();
+            }
+        });
+
+        document.getElementById('next-btn').addEventListener('click', () => {
+            if (isAnswerMode) {
+                currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
+                showQuestion();
+            } else {
+                if (currentQuestionIndex < questions.length - 1) {
+                    currentQuestionIndex++;
+                    showQuestion();
+                } else {
+                    showFinalScore();
+                }
+            }
+        });
+
+        document.getElementById('jump-btn').addEventListener('click', () => {
+            const questionNum = parseInt(document.getElementById('jump-input').value);
+            if (questionNum >= 1 && questionNum <= questions.length) {
+                currentQuestionIndex = questionNum - 1;
+                showQuestion();
+                document.getElementById('jump-input').value = '';
+            } else {
+                alert(`Please enter a number between 1 and ${questions.length}`);
+            }
+        });
+
+        document.getElementById('mode-toggle').addEventListener('click', () => {
+            isAnswerMode = !isAnswerMode;
+            const toggle = document.getElementById('mode-toggle');
+            
+            if (isAnswerMode) {
+                toggle.textContent = '📝 Quiz Mode';
+                toggle.classList.add('active');
+            } else {
+                toggle.textContent = '📖 Answer Mode';
+                toggle.classList.remove('active');
+            }
+            
+            showQuestion();
+        });
+
+        document.getElementById('night-mode-toggle').addEventListener('click', () => {
+            document.body.classList.toggle('night-mode');
+            const toggle = document.getElementById('night-mode-toggle');
+            
+            if (document.body.classList.contains('night-mode')) {
+                toggle.textContent = '☀️ Day Mode';
+                toggle.classList.add('active');
+            } else {
+                toggle.textContent = '🌙 Night Mode';
+                toggle.classList.remove('active');
+            }
+        });
+
+        document.getElementById('exit-btn').addEventListener('click', () => {
+            if (confirm('Are you sure you want to exit the quiz?')) {
+                clearInterval(timerInterval);
+                showFinalScore();
+            }
+        });
+
+        // Initialize the quiz when page loads
+        document.addEventListener('DOMContentLoaded', initializeQuiz);
+    </script>
+</body>
+</html>
